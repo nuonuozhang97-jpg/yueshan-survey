@@ -314,9 +314,18 @@ function submitVote() {
 
   const idx = parseInt(sel.value);
   localStorage.setItem(KEY, idx);
+  
+  // 本地存储
   let counts = JSON.parse(localStorage.getItem('yueshan_counts') || '[0,0,0,0,0]');
   counts[idx]++;
   localStorage.setItem('yueshan_counts', JSON.stringify(counts));
+
+  // 尝试提交到实时服务器（投屏用）
+  fetch('/api/vote', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({idx: idx})
+  }).catch(() => {});  // 失败静默，不影响本地使用
 
   document.getElementById('voteBtn').disabled = true;
   document.getElementById('btnText').textContent = '✅ 已投票';
