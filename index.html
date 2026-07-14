@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>越山向海 · 活动意向调查</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #0a1628;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== 背景山海场景 ===== */
+.scene {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+/* 天空渐变 */
+.sky {
+  position: absolute; top: 0; left: 0; width: 100%; height: 55%;
+  background: linear-gradient(180deg,
+    #0a1628 0%, #1a2a4a 30%, #2d4a6b 60%, #4a7c9b 100%);
+}
+/* 星星 */
+.star {
+  position: absolute; background: #fff; border-radius: 50%;
+  animation: twinkle 3s infinite alternate;
+}
+@keyframes twinkle { 0% { opacity: .3; } 100% { opacity: 1; } }
+/* 远山层 */
+.mountains {
+  position: absolute; bottom: 45%; left: 0; width: 100%; height: 40%;
+}
+.mountain-layer {
+  position: absolute; bottom: 0; width: 100%;
+}
+/* 近山 */
+.mountain-1 {
+  height: 280px;
+  background: linear-gradient(175deg,
+    transparent 0%, transparent 30%,
+    #1a3a5c 30%, #152d48 50%, #1a3a5c 65%, #0f2440 100%);
+  clip-path: polygon(
+    0% 100%, 0% 70%, 8% 50%, 15% 55%, 22% 35%, 30% 42%,
+    38% 25%, 45% 35%, 52% 20%, 58% 28%, 65% 18%, 70% 30%,
+    78% 22%, 85% 38%, 92% 28%, 100% 45%, 100% 100%
+  );
+}
+.mountain-2 {
+  height: 200px;
+  background: linear-gradient(175deg,
+    transparent 0%, transparent 20%,
+    #243b5e 20%, #1e3350 50%, #243b5e 70%, #152742 100%);
+  clip-path: polygon(
+    0% 100%, 0% 55%, 10% 40%, 18% 48%, 25% 30%, 35% 42%,
+    42% 25%, 50% 38%, 58% 28%, 65% 40%, 72% 22%, 80% 35%,
+    90% 30%, 100% 50%, 100% 100%
+  );
+  transform: translateY(60px);
+}
+.mountain-3 {
+  height: 140px;
+  background: linear-gradient(175deg,
+    transparent 0%, transparent 15%,
+    #2c4a72 15%, #253e62 50%, #2c4a72 75%, #1a3050 100%);
+  clip-path: polygon(
+    0% 100%, 0% 50%, 12% 35%, 20% 45%, 28% 28%, 38% 40%,
+    48% 22%, 55% 38%, 63% 25%, 72% 38%, 82% 30%, 92% 42%, 100% 48%, 100% 100%
+  );
+  transform: translateY(100px);
+}
+/* 太阳/月亮 */
+.sun {
+  position: absolute; top: 15%; right: 15%;
+  width: 80px; height: 80px; border-radius: 50%;
+  background: radial-gradient(circle, #ffe7b3 0%, #ffb84d 40%, #f28c38 70%, transparent 72%);
+  box-shadow: 0 0 60px rgba(255, 184, 77, .3), 0 0 120px rgba(255, 140, 50, .15);
+}
+/* 海面 */
+.sea {
+  position: absolute; bottom: 0; left: 0; width: 100%; height: 45%;
+  background: linear-gradient(180deg,
+    #1a4a6e 0%, #0d3355 20%, #0b2842 50%, #071d30 100%);
+}
+/* 波浪 */
+.wave {
+  position: absolute; width: 200%; height: 60px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent, transparent 40px,
+    rgba(255,255,255,.04) 40px, rgba(255,255,255,.04) 80px
+  );
+}
+.wave-1 {
+  top: -30px; animation: wave1 8s linear infinite;
+}
+.wave-2 {
+  top: -15px; animation: wave2 10s linear infinite;
+  opacity: .6;
+}
+.wave-3 {
+  top: 0px; animation: wave1 12s linear infinite;
+  opacity: .3;
+}
+@keyframes wave1 { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@keyframes wave2 { 0% { transform: translateX(-30%); } 100% { transform: translateX(-80%); } }
+/* 海上光斑 */
+.sea-sparkle {
+  position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,.5);
+  border-radius: 50%; animation: sparkle 3s infinite alternate;
+}
+@keyframes sparkle { 0% { opacity: .2; } 100% { opacity: .8; } }
+
+/* ===== 主内容 ===== */
+.main {
+  position: relative; z-index: 1;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 80px 20px 60px; min-height: 100vh;
+}
+.card {
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px 32px;
+  width: 100%; max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.1);
+  animation: slideUp .6s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 头部 */
+.header {
+  text-align: center; margin-bottom: 32px;
+}
+.logo-icon {
+  font-size: 48px; margin-bottom: 12px;
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.header h1 {
+  font-size: 26px; font-weight: 800;
+  background: linear-gradient(135deg, #1a5276, #2e86c1, #1a5276);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.header .tagline {
+  color: #7f8c8d; font-size: 14px; letter-spacing: 1px;
+}
+
+/* 分割线 */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 24px 0; color: #bdc3c7; font-size: 12px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, #d5dbdb, transparent);
+}
+
+/* 问题区域 */
+.q-block {
+  margin-bottom: 28px;
+}
+.q-label {
+  font-size: 15px; font-weight: 600; color: #2c3e50;
+  margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px;
+}
+.q-label .num {
+  background: linear-gradient(135deg, #2e86c1, #1a5276);
+  color: #fff; font-size: 12px; font-weight: 700;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: -2px;
+}
+.q-required { color: #e74c3c; margin-left: 2px; }
+
+/* 选项 */
+.options { display: flex; flex-direction: column; gap: 8px; }
+.option {
+  display: flex; align-items: center; padding: 12px 16px;
+  border: 2px solid #e8ecf1; border-radius: 12px;
+  cursor: pointer; transition: all .2s;
+  font-size: 14px; color: #34495e; user-select: none;
+  background: #fafbfc;
+}
+.option:hover { border-color: #2e86c1; background: #f0f7fd; }
+.option input { display: none; }
+.radio-dot {
+  width: 18px; height: 18px; border: 2px solid #cbd1d8;
+  border-radius: 50%; margin-right: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.radio-dot::after {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: transparent; transition: all .2s;
+}
+.option.selected { border-color: #2e86c1; background: #eaf4fb; }
+.option.selected .radio-dot { border-color: #2e86c1; }
+.option.selected .radio-dot::after { background: #2e86c1; }
+
+/* 文本框 */
+.text-input {
+  width: 100%; padding: 12px 16px;
+  border: 2px solid #e8ecf1; border-radius: 12px;
+  font-size: 14px; color: #2c3e50; background: #fafbfc;
+  resize: vertical; min-height: 80px;
+  font-family: inherit; transition: border-color .2s;
+}
+.text-input:focus {
+  outline: none; border-color: #2e86c1;
+  background: #fff;
+}
+.text-input::placeholder { color: #bdc3c7; }
+
+/* 多选标记 */
+.check-dot {
+  width: 18px; height: 18px; border: 2px solid #cbd1d8;
+  border-radius: 4px; margin-right: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.check-dot::after {
+  content: '✓'; color: transparent; font-size: 12px; font-weight: 700;
+  transition: all .2s;
+}
+.option.selected .check-dot {
+  border-color: #2e86c1; background: #2e86c1;
+}
+.option.selected .check-dot::after { color: #fff; }
+
+/* 按钮 */
+.submit-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, #1a5276, #2e86c1);
+  color: #fff; border: none; border-radius: 14px;
+  font-size: 17px; font-weight: 700; cursor: pointer;
+  margin-top: 32px; letter-spacing: 2px;
+  transition: all .3s;
+  position: relative; overflow: hidden;
+}
+.submit-btn::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  transform: translate(-50%, -50%);
+  transition: width .6s, height .6s;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,82,118,.4); }
+.submit-btn:hover::after { width: 600px; height: 600px; }
+.submit-btn:active { transform: scale(.98); }
+.submit-btn:disabled { background: #bdc3c7; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* 成功页 */
+.thanks { display: none; text-align: center; padding: 40px 20px; animation: slideUp .5s ease; }
+.thanks.show { display: block; }
+.thanks .icon { font-size: 64px; margin-bottom: 16px; }
+.thanks h2 {
+  font-size: 22px; font-weight: 800;
+  background: linear-gradient(135deg, #1a5276, #2e86c1);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.thanks p { color: #7f8c8d; font-size: 14px; }
+
+/* 响应式 */
+@media (max-width: 480px) {
+  .main { padding: 40px 12px 30px; }
+  .card { padding: 28px 20px; border-radius: 20px; }
+  .header h1 { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 山海场景 -->
+<div class="scene">
+  <div class="sky">
+    <!-- 星星 -->
+    <div class="star" style="top:8%;left:10%;width:2px;height:2px;"></div>
+    <div class="star" style="top:12%;left:25%;width:1.5px;height:1.5px;animation-delay:.5s;"></div>
+    <div class="star" style="top:5%;left:45%;width:2px;height:2px;animation-delay:1s;"></div>
+    <div class="star" style="top:15%;left:60%;width:1px;height:1px;animation-delay:1.5s;"></div>
+    <div class="star" style="top:8%;left:75%;width:2px;height:2px;animation-delay:.8s;"></div>
+    <div class="star" style="top:18%;left:85%;width:1.5px;height:1.5px;animation-delay:2s;"></div>
+    <div class="star" style="top:22%;left:35%;width:1px;height:1px;animation-delay:1.2s;"></div>
+    <div class="star" style="top:3%;left:55%;width:1.5px;height:1.5px;animation-delay:.3s;"></div>
+  </div>
+  <div class="sun"></div>
+  <div class="mountains">
+    <div class="mountain-layer mountain-3"></div>
+    <div class="mountain-layer mountain-2"></div>
+    <div class="mountain-layer mountain-1"></div>
+  </div>
+  <div class="sea">
+    <div class="wave wave-1"></div>
+    <div class="wave wave-2"></div>
+    <div class="wave wave-3"></div>
+    <div class="sea-sparkle" style="top:20%;left:10%;animation-delay:0s;"></div>
+    <div class="sea-sparkle" style="top:35%;left:30%;animation-delay:1s;"></div>
+    <div class="sea-sparkle" style="top:15%;left:50%;animation-delay:2s;"></div>
+    <div class="sea-sparkle" style="top:40%;left:65%;animation-delay:.5s;"></div>
+    <div class="sea-sparkle" style="top:25%;left:80%;animation-delay:1.5s;"></div>
+    <div class="sea-sparkle" style="top:45%;left:20%;animation-delay:2.5s;"></div>
+    <div class="sea-sparkle" style="top:10%;left:90%;animation-delay:.8s;"></div>
+    <div class="sea-sparkle" style="top:30%;left:40%;animation-delay:1.8s;"></div>
+  </div>
+</div>
+
+<!-- 主内容 -->
+<div class="main">
+<div class="card" id="card">
+
+  <!-- 已提交 -->
+  <div class="thanks" id="thanks">
+    <div class="icon">⛰️🌊</div>
+    <h2>感谢你的参与！</h2>
+    <p>你的意见将帮助我们更好地<br>打造「越山向海」活动</p>
+  </div>
+
+  <!-- 问卷 -->
+  <div id="form">
+    <div class="header">
+      <div class="logo-icon">⛰️🌊</div>
+      <h1>越山向海</h1>
+      <div class="tagline">活 动 意 向 调 查</div>
+    </div>
+
+    <div class="divider">📋 基础信息</div>
+
+    <!-- Q1 -->
+    <div class="q-block">
+      <div class="q-label"><span class="num">1</span> 你之前听说过「越山向海」活动吗？<span class="q-required">*</span></div>
+      <div class="options" data-q="q1">
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q1" value="听说过，很了解"><span class="radio-dot"></span>听说过，很了解</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q1" value="听说过，但不太清楚细节"><span class="radio-dot"></span>听说过，但不太清楚细节</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q1" value="第一次听说"><span class="radio-dot"></span>第一次听说</label>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block">
+      <div class="q-label"><span class="num">2</span> 你对这类户外/越野活动的兴趣程度？<span class="q-required">*</span></div>
+      <div class="options" data-q="q2">
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="非常感兴趣"><span class="radio-dot"></span>非常感兴趣，一定会参加</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="比较感兴趣"><span class="radio-dot"></span>比较感兴趣，看情况参加</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="一般"><span class="radio-dot"></span>一般，不太确定</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="不感兴趣"><span class="radio-dot"></span>不感兴趣</label>
+      </div>
+    </div>
+
+    <div class="divider">🏃 活动偏好</div>
+
+    <!-- Q3 -->
+    <div class="q-block">
+      <div class="q-label"><span class="num">3</span> 你更偏好哪种活动形式？<span class="q-required">*</span></div>
+      <div class="options" data-q="q3">
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q3" value="越野跑"><span class="radio-dot"></span>越野跑 / 山地马拉松</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q3" value="徒步"><span class="radio-dot"></span>轻徒步 / 户外健行</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q3" value="骑行"><span class="radio-dot"></span>山地骑行</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q3" value="综合"><span class="radio-dot"></span>综合体验（跑步+徒步+露营）</label>
+      </div>
+    </div>
+
+    <!-- Q4 多选 -->
+    <div class="q-block">
+      <div class="q-label"><span class="num">4</span> 你最看重活动的哪些方面？（多选）</div>
+      <div class="options" data-q="q4" data-multi="true">
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="路线风景"><span class="check-dot"></span>路线风景优美</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="安全保障"><span class="check-dot"></span>安全保障到位</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="社交氛围"><span class="check-dot"></span>社交氛围好，能认识新朋友</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="专业组织"><span class="check-dot"></span>专业组织，补给完善</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="亲子友好"><span class="check-dot"></span>亲子/家庭友好</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="摄影打卡"><span class="check-dot"></span>摄影打卡点丰富</label>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-block">
+      <div class="q-label"><span class="num">5</span> 你更倾向于什么时间参加？</div>
+      <div class="options" data-q="q5">
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5" value="周末单日"><span class="radio-dot"></span>周末单日活动</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5" value="周末两天一夜"><span class="radio-dot"></span>周末两天一夜</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5" value="法定假期"><span class="radio-dot"></span>法定假期（3天以上）</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5" value="都行"><span class="radio-dot"></span>都行，看活动安排</label>
+      </div>
+    </div>
+
+    <div class="divider">💬 你的想法</div>
+
+    <!-- Q6 -->
+    <div class="q-block">
+      <div class="q-label"><span class="num">6</span> 你对「越山向海」有什么建议或期待？</div>
+      <textarea class="text-input" placeholder="请畅所欲言，比如想去的地方、想要的主题、担心的问题……" data-q="q6"></textarea>
+    </div>
+
+    <!-- 提交 -->
+    <button class="submit-btn" id="submitBtn" onclick="submitSurvey()">提 交 问 卷</button>
+  </div>
+
+</div>
+</div>
+
+<script>
+function selectRadio(el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('selected');
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+}
+
+function submitSurvey() {
+  // 验证必填
+  const required = ['q1', 'q2', 'q3'];
+  for (const name of required) {
+    const checked = document.querySelector(`input[name="${name}"]:checked`);
+    if (!checked) {
+      alert('请完成所有必答题（标有 * 的题目）');
+      return;
+    }
+  }
+
+  // 收集数据
+  const data = {};
+  document.querySelectorAll('[data-q]').forEach(block => {
+    const q = block.dataset.q;
+    if (block.dataset.multi) {
+      const checked = block.querySelectorAll('input:checked');
+      data[q] = Array.from(checked).map(c => c.value);
+    } else if (block.tagName === 'TEXTAREA') {
+      data[q] = block.value.trim();
+    } else {
+      const checked = block.querySelector('input:checked');
+      data[q] = checked ? checked.value : '';
+    }
+  });
+
+  // 存储到 localStorage
+  const all = JSON.parse(localStorage.getItem('yueshan_survey') || '[]');
+  all.push({ time: new Date().toISOString(), ...data });
+  localStorage.setItem('yueshan_survey', JSON.stringify(all));
+
+  // 显示感谢页
+  document.getElementById('form').style.display = 'none';
+  document.getElementById('thanks').classList.add('show');
+  document.getElementById('submitBtn').style.display = 'none';
+}
+
+// 初始化：如果已提交过则显示结果
+if (localStorage.getItem('yueshan_survey')) {
+  // 允许重复提交（宣传问卷）
+}
+</script>
+</body>
+</html>
