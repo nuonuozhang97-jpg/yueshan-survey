@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>越山向海 · 现场投票</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(180deg, #e8f4f8 0%, #c9e8f0 30%, #a8d8ea 60%, #7ec8e3 100%);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 20px; position: relative; overflow-x: hidden;
+}
+/* 背景 */
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: 
+    radial-gradient(ellipse at 80% 20%, rgba(255,255,255,.3) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(72,202,228,.15) 0%, transparent 60%);
+  z-index: 0; pointer-events: none;
+}
+.card {
+  position: relative; z-index: 1;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(20px);
+  border-radius: 24px; padding: 40px 30px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 8px 40px rgba(30,120,170,.12);
+  text-align: center;
+}
+.year-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  color: #fff; font-size: 12px; font-weight: 700;
+  padding: 4px 16px; border-radius: 20px; letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+h1 {
+  font-size: 24px; font-weight: 800;
+  background: linear-gradient(135deg, #0077b6, #48cae4);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin-bottom: 6px;
+}
+.subtitle { color: #6b8a9a; font-size: 14px; margin-bottom: 28px; }
+.question {
+  font-size: 17px; font-weight: 700; color: #1a4a5e;
+  margin-bottom: 18px; line-height: 1.5; text-align: left;
+}
+.options { display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 24px; }
+.option {
+  display: flex; align-items: center; padding: 14px 16px;
+  border: 2px solid #dceef5; border-radius: 12px;
+  cursor: pointer; transition: all .2s;
+  font-size: 14px; color: #2c5a6e; user-select: none;
+  background: #fafdfe;
+}
+.option:hover { border-color: #48cae4; background: #f0f9fd; }
+.option input { display: none; }
+.dot {
+  width: 18px; height: 18px; border: 2px solid #c0d8e4;
+  border-radius: 50%; margin-right: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.dot::after {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: transparent; transition: all .2s;
+}
+.option.selected { border-color: #0077b6; background: #e8f4fc; }
+.option.selected .dot { border-color: #0077b6; }
+.option.selected .dot::after { background: #0077b6; }
+.submit-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  color: #fff; border: none; border-radius: 14px;
+  font-size: 17px; font-weight: 700; cursor: pointer;
+  letter-spacing: 1px; transition: all .3s;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,119,182,.3); }
+.submit-btn:active { transform: scale(.98); }
+.submit-btn:disabled { background: #b0cdd8; cursor: not-allowed; }
+.note { font-size: 12px; color: #8ab4c4; margin-top: 14px; }
+.results { margin-top: 24px; display: none; }
+.results.show { display: block; }
+.results h3 {
+  font-size: 15px; color: #1a4a5e; margin-bottom: 14px;
+  padding-top: 20px; border-top: 1px solid #e0eef4;
+}
+.bar-wrap {
+  height: 28px; background: #edf6fa; border-radius: 8px;
+  margin: 6px 0 14px; overflow: hidden;
+}
+.bar {
+  height: 100%; background: linear-gradient(90deg, #0077b6, #48cae4);
+  border-radius: 8px; transition: width .5s;
+  display: flex; align-items: center; padding-left: 10px;
+  color: #fff; font-size: 12px; font-weight: 600; min-width: 0;
+}
+.bar-label { font-size: 13px; color: #2c5a6e; display: flex; justify-content: space-between; margin-bottom: 2px; }
+.bar-label span:last-child { color: #6b8a9a; font-size: 12px; }
+.thanks-msg { display: none; color: #30a14e; font-size: 14px; margin-top: 10px; }
+.thanks-msg.show { display: block; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div id="voteSection">
+    <div class="year-badge">2026 · 第四年</div>
+    <h1>越山向海</h1>
+    <p class="subtitle">现场匿名投票</p>
+    <div class="question">听到「今年继续」，<br>你的第一反应是什么？</div>
+    <div class="options" id="options">
+      <label class="option" onclick="selectOpt(this)"><input type="radio" name="vote" value="0"><span class="dot"></span>很燃，但感觉和我没什么关系</label>
+      <label class="option" onclick="selectOpt(this)"><input type="radio" name="vote" value="1"><span class="dot"></span>想支持，但确实没有时间</label>
+      <label class="option" onclick="selectOpt(this)"><input type="radio" name="vote" value="2"><span class="dot"></span>我不跑步，不知道能做什么</label>
+      <label class="option" onclick="selectOpt(this)"><input type="radio" name="vote" value="3"><span class="dot"></span>有点好奇，但还没准备好</label>
+      <label class="option" onclick="selectOpt(this)"><input type="radio" name="vote" value="4"><span class="dot"></span>我愿意进一步了解</label>
+    </div>
+    <button class="submit-btn" id="voteBtn" onclick="submitVote()">提交投票</button>
+    <p class="thanks-msg" id="thanksMsg">✅ 投票成功！</p>
+    <p class="note">不记名 · 不收集部门 · 只选最真实的</p>
+  </div>
+  <div class="results" id="results"></div>
+</div>
+
+<script>
+const LABELS = ['很燃，但感觉和我没什么关系','想支持，但确实没有时间','我不跑步，不知道能做什么','有点好奇，但还没准备好','我愿意进一步了解'];
+const KEY = 'yueshan_vote_2026';
+
+function selectOpt(el) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function submitVote() {
+  const sel = document.querySelector('input[name="vote"]:checked');
+  if (!sel) { alert('请选择一个选项'); return; }
+  if (localStorage.getItem(KEY)) { alert('你已经投过票了'); return; }
+
+  const idx = parseInt(sel.value);
+  localStorage.setItem(KEY, idx);
+  let counts = JSON.parse(localStorage.getItem('yueshan_counts') || '[0,0,0,0,0]');
+  counts[idx]++;
+  localStorage.setItem('yueshan_counts', JSON.stringify(counts));
+
+  document.getElementById('voteBtn').disabled = true;
+  document.getElementById('voteBtn').textContent = '已投票';
+  document.getElementById('thanksMsg').classList.add('show');
+  renderResults(counts);
+}
+
+function renderResults(counts) {
+  const total = counts.reduce((a,b)=>a+b,0);
+  if (total === 0) return;
+  const r = document.getElementById('results');
+  r.classList.add('show');
+  r.innerHTML = '<h3>📊 实时结果（共 ' + total + ' 票）</h3>' +
+    counts.map((c,i) => {
+      const pct = total > 0 ? Math.round(c/total*100) : 0;
+      return '<div class="bar-label"><span>' + LABELS[i] + '</span><span>' + c + ' 票 (' + pct + '%)</span></div>' +
+        '<div class="bar-wrap"><div class="bar" style="width:' + Math.max(pct, c>0?4:0) + '%">' + (pct>10?pct+'%':'') + '</div></div>';
+    }).join('');
+}
+
+// 初始化
+(function() {
+  const voted = localStorage.getItem(KEY);
+  const counts = JSON.parse(localStorage.getItem('yueshan_counts') || '[0,0,0,0,0]');
+  renderResults(counts);
+  if (voted !== null) {
+    document.getElementById('voteBtn').disabled = true;
+    document.getElementById('voteBtn').textContent = '已投票';
+    document.getElementById('thanksMsg').classList.add('show');
+  }
+})();
+</script>
+</body>
+</html>
