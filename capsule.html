@@ -5,181 +5,244 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>向海时间胶囊 · 越山向海2026</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-  background: linear-gradient(180deg, #e8f4f8 0%, #c9e8f0 30%, #a8d8ea 60%, #7ec8e3 100%);
+  background: linear-gradient(170deg, #d4eaf7 0%, #b8def0 30%, #89cee8 60%, #5bb5d8 100%);
   min-height: 100vh; padding: 20px;
   display: flex; flex-direction: column; align-items: center;
+  overflow-x: hidden;
 }
-body::before {
-  content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background:
-    radial-gradient(ellipse at 80% 20%, rgba(255,255,255,.3) 0%, transparent 60%),
-    radial-gradient(ellipse at 20% 80%, rgba(72,202,228,.15) 0%, transparent 60%);
-  z-index: 0; pointer-events: none;
+
+.scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.sun {
+  position: absolute; top: 4%; right: 8%;
+  width: 70px; height: 70px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #fff9e6, #ffe082 50%, #ffb74d 80%, transparent 100%);
+  box-shadow: 0 0 60px rgba(255,200,100,.2);
+  animation: sunPulse 4s ease-in-out infinite;
 }
+@keyframes sunPulse {
+  0%, 100% { box-shadow: 0 0 60px rgba(255,200,100,.2); }
+  50% { box-shadow: 0 0 80px rgba(255,200,100,.3); }
+}
+.cloud {
+  position: absolute; background: rgba(255,255,255,.7); border-radius: 50px;
+}
+.cloud::before, .cloud::after { content: ''; position: absolute; background: inherit; border-radius: 50%; }
+.c1 { width: 110px; height: 38px; top: 8%; left: -20px; animation: drift 20s linear infinite; }
+.c1::before { width: 45px; height: 45px; top: -22px; left: 20px; }
+.c1::after { width: 60px; height: 50px; top: -26px; left: 42px; }
+.c2 { width: 85px; height: 30px; top: 20%; right: 5%; animation: drift 16s linear infinite reverse; opacity: .6; }
+.c2::before { width: 35px; height: 35px; top: -17px; left: 15px; }
+.c2::after { width: 45px; height: 40px; top: -20px; left: 32px; }
+@keyframes drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(40px); }
+}
+.sea {
+  position: absolute; bottom: 0; left: 0; width: 100%; height: 28%;
+  background: linear-gradient(180deg, rgba(70,170,210,.25), rgba(20,120,165,.5));
+}
+.wave {
+  position: absolute; width: 200%; height: 30px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 16'%3E%3Cpath fill='rgba(255,255,255,.1)' d='M0 8 Q25 0 50 8 T100 8 T150 8 T200 8 V16 H0 Z'/%3E%3C/svg%3E") repeat-x;
+  animation: waveMove 12s linear infinite;
+}
+.wave:nth-child(2) { top: 25%; animation-duration: 15s; opacity: .5; }
+.wave:nth-child(3) { top: 50%; animation-duration: 18s; opacity: .3; }
+@keyframes waveMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
 .card {
-  position: relative; z-index: 1;
-  background: rgba(255,255,255,.92);
-  backdrop-filter: blur(20px);
-  border-radius: 24px; padding: 36px 28px;
-  width: 100%; max-width: 500px;
-  box-shadow: 0 8px 40px rgba(30,120,170,.12);
-  margin: 30px 0 50px;
+  position: relative; z-index: 2;
+  background: rgba(255,255,255,.9);
+  backdrop-filter: blur(24px);
+  border-radius: 28px; padding: 40px 30px;
+  width: 100%; max-width: 520px;
+  box-shadow: 0 4px 32px rgba(16,80,120,.1), 0 1px 0 rgba(255,255,255,.6) inset;
+  border: 1px solid rgba(255,255,255,.5);
+  margin: 20px 0 50px;
+  animation: cardIn .6s cubic-bezier(.16,1,.3,1);
 }
-.header { text-align: center; margin-bottom: 10px; }
-.year-badge {
-  display: inline-block;
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(20px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.header { text-align: center; margin-bottom: 8px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
   background: linear-gradient(135deg, #0077b6, #00b4d8);
   color: #fff; font-size: 12px; font-weight: 700;
-  padding: 4px 16px; border-radius: 20px; letter-spacing: 1px;
-  margin-bottom: 16px;
+  padding: 5px 18px; border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,119,182,.2);
+  margin-bottom: 18px;
 }
 h1 {
-  font-size: 24px; font-weight: 800;
-  background: linear-gradient(135deg, #0077b6, #48cae4);
+  font-size: 26px; font-weight: 900;
+  background: linear-gradient(135deg, #005f8c, #0077b6, #48cae4);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; margin-bottom: 4px;
 }
-.tagline { color: #6b8a9a; font-size: 13px; }
+.tagline { color: #5b96ab; font-size: 13px; }
 
-.intro-box {
-  background: linear-gradient(135deg, #e0f4fc, #f5fafd);
-  border-radius: 14px; padding: 16px 18px; margin: 20px 0;
-  font-size: 13px; color: #3a6b80; line-height: 1.7;
+.intro-card {
+  background: linear-gradient(135deg, #e6f4fc, #f2faff);
+  border: 1px solid #cce8f5;
+  border-radius: 16px; padding: 18px 20px; margin: 22px 0;
+  display: flex; align-items: flex-start; gap: 12px;
 }
+.intro-card .icon { font-size: 28px; flex-shrink: 0; }
+.intro-card p { font-size: 13px; color: #2a6178; line-height: 1.7; margin: 0; }
 
 .q-block { margin-bottom: 22px; }
 .q-label {
-  font-size: 14px; font-weight: 700; color: #1a4a5e;
+  font-size: 14px; font-weight: 700; color: #154a5e;
   margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px;
   line-height: 1.4;
 }
 .q-num {
-  background: linear-gradient(135deg, #0077b6, #00b4d8);
-  color: #fff; font-size: 12px; font-weight: 700;
+  background: linear-gradient(135deg, #0077b6, #48cae4);
+  color: #fff; font-size: 11px; font-weight: 800;
   min-width: 22px; height: 22px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; margin-top: 1px;
 }
-.hint { font-size: 12px; color: #8ab4c4; font-weight: 400; margin-left: 4px; }
+.hint { font-size: 11px; color: #8ab4c4; font-weight: 400; margin-left: 2px; }
 
 .options { display: flex; flex-direction: column; gap: 7px; }
 .option {
-  display: flex; align-items: center; padding: 12px 14px;
-  border: 2px solid #dceef5; border-radius: 10px;
-  cursor: pointer; transition: all .15s;
-  font-size: 13px; color: #2c5a6e; user-select: none;
-  background: #fafdfe; line-height: 1.4;
+  display: flex; align-items: center; padding: 13px 15px;
+  border: 2px solid #daeef7; border-radius: 12px;
+  cursor: pointer; transition: all .15s cubic-bezier(.16,1,.3,1);
+  font-size: 13px; color: #2a6178; background: #fafdfe;
+  line-height: 1.4;
 }
-.option:hover { border-color: #48cae4; background: #f0f9fd; }
+.option:hover { border-color: #48cae4; background: #f0f9fd; transform: translateX(3px); }
 .option input { display: none; }
 .radio-dot {
-  width: 16px; height: 16px; border: 2px solid #c0d8e4;
+  width: 18px; height: 18px; border: 2.5px solid #b8d8e8;
   border-radius: 50%; margin-right: 10px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   transition: all .15s;
 }
 .radio-dot::after {
-  content: ''; width: 7px; height: 7px; border-radius: 50%;
-  background: transparent; transition: all .15s;
+  content: '✓'; color: transparent; font-size: 10px; font-weight: 900; transition: all .15s;
 }
-.option.selected { border-color: #0077b6; background: #e8f4fc; }
-.option.selected .radio-dot { border-color: #0077b6; }
-.option.selected .radio-dot::after { background: #0077b6; }
+.option.selected { border-color: #0077b6; background: #e6f4fd; transform: translateX(3px); }
+.option.selected .radio-dot { border-color: #0077b6; background: #0077b6; }
+.option.selected .radio-dot::after { color: #fff; }
 
 .check-dot {
-  width: 16px; height: 16px; border: 2px solid #c0d8e4;
-  border-radius: 2px; margin-right: 10px; flex-shrink: 0;
+  width: 18px; height: 18px; border: 2.5px solid #b8d8e8;
+  border-radius: 4px; margin-right: 10px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   transition: all .15s;
 }
 .check-dot::after {
-  content: '✓'; color: transparent; font-size: 11px; font-weight: 700;
-  transition: all .15s;
+  content: '✓'; color: transparent; font-size: 10px; font-weight: 900; transition: all .15s;
 }
 .option.selected .check-dot { border-color: #0077b6; background: #0077b6; }
 .option.selected .check-dot::after { color: #fff; }
 
-.text-input {
-  width: 100%; padding: 12px 14px;
-  border: 2px solid #dceef5; border-radius: 10px;
-  font-size: 14px; color: #2c5a6e; background: #fafdfe;
-  resize: vertical; min-height: 80px;
+.text-input, .name-input {
+  width: 100%; padding: 14px 16px;
+  border: 2px solid #daeef7; border-radius: 12px;
+  font-size: 14px; color: #2a6178; background: #fafdfe;
   font-family: inherit; transition: border-color .15s;
+  resize: vertical;
 }
-.text-input:focus { outline: none; border-color: #48cae4; background: #fff; }
-.text-input::placeholder { color: #a0c4d4; }
+.text-input { min-height: 85px; }
+.text-input:focus, .name-input:focus { outline: none; border-color: #48cae4; background: #fff; }
+.text-input::placeholder, .name-input::placeholder { color: #a0c4d4; }
+
 .char-count { text-align: right; font-size: 11px; color: #a0c4d4; margin-top: 4px; }
 .char-count.over { color: #e76f51; }
 
+.conditional { display: none; }
+.conditional.show { display: block; animation: fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
 .other-input {
-  width: 100%; padding: 8px 12px; margin-top: 6px;
-  border: 2px solid #dceef5; border-radius: 8px;
-  font-size: 13px; color: #2c5a6e; background: #fafdfe;
-  font-family: inherit; transition: border-color .15s;
-  display: none;
+  width: 100%; padding: 10px 12px; margin-top: 6px;
+  border: 2px solid #daeef7; border-radius: 10px;
+  font-size: 13px; color: #2a6178; background: #fafdfe;
+  font-family: inherit; display: none;
 }
 .other-input.show { display: block; }
-.other-input:focus { outline: none; border-color: #48cae4; }
 
-.name-input {
-  width: 100%; padding: 12px 14px;
-  border: 2px solid #dceef5; border-radius: 10px;
-  font-size: 14px; color: #2c5a6e; background: #fafdfe;
-  font-family: inherit; transition: border-color .15s;
-}
-.name-input:focus { outline: none; border-color: #48cae4; background: #fff; }
 .name-note { font-size: 11px; color: #8ab4c4; margin-top: 4px; }
 
-.conditional { display: none; }
-.conditional.show { display: block; }
-
 .submit-btn {
-  width: 100%; padding: 16px;
-  background: linear-gradient(135deg, #0077b6, #00b4d8);
-  color: #fff; border: none; border-radius: 14px;
-  font-size: 17px; font-weight: 700; cursor: pointer;
+  width: 100%; padding: 18px;
+  background: linear-gradient(135deg, #0077b6, #0096c7);
+  color: #fff; border: none; border-radius: 16px;
+  font-size: 18px; font-weight: 800; cursor: pointer;
   margin-top: 24px; letter-spacing: 1px;
-  transition: all .3s;
+  transition: all .3s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 6px 20px rgba(0,119,182,.25);
+  position: relative; overflow: hidden;
 }
-.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,119,182,.3); }
-.submit-btn:active { transform: scale(.98); }
+.submit-btn::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0; background: rgba(255,255,255,.15);
+  border-radius: 50%; transition: all .6s;
+  transform: translate(-50%, -50%);
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,119,182,.35); }
+.submit-btn:hover::after { width: 500px; height: 500px; }
+.submit-btn:active { transform: scale(.97); }
 
-.thanks { display: none; text-align: center; padding: 40px 20px; }
+.thanks { display: none; text-align: center; padding: 50px 20px; animation: cardIn .5s ease; }
 .thanks.show { display: block; }
-.thanks .icon { font-size: 48px; margin-bottom: 12px; }
+.thanks .big-icon { font-size: 56px; margin-bottom: 16px; animation: float 2s ease-in-out infinite; }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
 .thanks h2 {
-  font-size: 20px; font-weight: 800;
+  font-size: 22px; font-weight: 900;
   background: linear-gradient(135deg, #0077b6, #48cae4);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 12px;
+  background-clip: text; margin-bottom: 14px;
 }
-.thanks p { color: #6b8a9a; font-size: 14px; line-height: 1.6; }
+.thanks p { color: #5b96ab; font-size: 14px; line-height: 1.8; }
 
 @media (max-width: 480px) {
-  .card { padding: 24px 16px; }
-  h1 { font-size: 21px; }
+  .card { padding: 28px 18px; border-radius: 24px; }
+  h1 { font-size: 22px; }
 }
 </style>
 </head>
 <body>
+
+<div class="scene">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="sea">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+</div>
+
 <div class="card" id="card">
   <div id="form">
     <div class="header">
-      <div class="year-badge">2026 · 第四年</div>
+      <div class="badge">🌟 2026 · 第四年</div>
       <h1>向海时间胶囊</h1>
       <div class="tagline">给十二月留个位置</div>
     </div>
 
-    <div class="intro-box">
-      这不是报名表，也不代表承诺参赛。用两分钟告诉我们，你希望怎样靠近今年的越山向海。你的真实感受，会直接影响后续活动设计。
+    <div class="intro-card">
+      <span class="icon">💌</span>
+      <p>这不是报名表，也不代表承诺参赛。用两分钟告诉我们，你希望怎样靠近今年的越山向海。<br>你的真实感受，会直接影响后续活动设计。</p>
     </div>
 
     <!-- Q1 -->
     <div class="q-block">
-      <div class="q-label"><span class="q-num">1</span> 给十二月留一句话 <span class="hint">（限50字）</span></div>
+      <div class="q-label"><span class="q-num">1</span> 给十二月留一句话 <span class="hint">（限 50 字）</span></div>
       <textarea class="text-input" id="q1" placeholder="到十二月，我希望这次越山向海……" maxlength="50" oninput="countChar(this)"></textarea>
       <div class="char-count" id="q1count">0 / 50</div>
     </div>
@@ -188,9 +251,9 @@ h1 {
     <div class="q-block">
       <div class="q-label"><span class="q-num">2</span> 这句话怎样保存？</div>
       <div class="options" data-q="q2">
-        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="署名放入时间胶囊"><span class="radio-dot"></span>署名放入时间胶囊</label>
-        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="匿名放入时间胶囊"><span class="radio-dot"></span>匿名放入时间胶囊</label>
-        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="仅由组织者保存，不公开展示"><span class="radio-dot"></span>仅由组织者保存，不公开展示</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="署名放入时间胶囊"><span class="radio-dot"></span>✍️ 署名放入时间胶囊</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="匿名放入时间胶囊"><span class="radio-dot"></span>🕶️ 匿名放入时间胶囊</label>
+        <label class="option" onclick="selectRadio(this)"><input type="radio" name="q2" value="仅由组织者保存，不公开展示"><span class="radio-dot"></span>🔐 仅由组织者保存，不公开展示</label>
       </div>
     </div>
 
@@ -198,28 +261,28 @@ h1 {
     <div class="q-block">
       <div class="q-label"><span class="q-num">3</span> 你目前愿意靠近到什么程度？<span class="hint">（多选）</span></div>
       <div class="options" data-q="q3" data-multi="true">
-        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="偶尔关注和支持"><span class="check-dot"></span>偶尔关注和支持</label>
-        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="参加一次轻量活动"><span class="check-dot"></span>参加一次轻量活动</label>
-        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="贡献一个创意、资源或任务"><span class="check-dot"></span>贡献一个创意、资源或任务</label>
-        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="了解跑者或保障角色"><span class="check-dot"></span>了解跑者或保障角色</label>
-        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="了解团队核心岗位"><span class="check-dot"></span>了解团队核心岗位</label>
-        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="目前暂时不参与，也没关系"><span class="check-dot"></span>目前暂时不参与，也没关系</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="偶尔关注和支持"><span class="check-dot"></span>👋 偶尔关注和支持</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="参加一次轻量活动"><span class="check-dot"></span>🏃 参加一次轻量活动</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="贡献一个创意、资源或任务"><span class="check-dot"></span>💡 贡献一个创意、资源或任务</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="了解跑者或保障角色"><span class="check-dot"></span>🔍 了解跑者或保障角色</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="了解团队核心岗位"><span class="check-dot"></span>🎯 了解团队核心岗位</label>
+        <label class="option" onclick="toggleCheck(this)"><input type="checkbox" value="目前暂时不参与，也没关系"><span class="check-dot"></span>😌 目前暂时不参与，也没关系</label>
       </div>
     </div>
 
     <!-- Q4 -->
     <div class="q-block">
-      <div class="q-label"><span class="q-num">4</span> 什么条件会让你更愿意参加？<span class="hint">（最多选3项）</span></div>
+      <div class="q-label"><span class="q-num">4</span> 什么条件会让你更愿意参加？<span class="hint">（最多选 3 项）</span></div>
       <div class="options" data-q="q4" data-multi="true" data-max="3">
-        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="活动低频，不需要持续打卡"><span class="check-dot"></span>活动低频，不需要持续打卡</label>
-        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="不要求跑步，也有参与位置"><span class="check-dot"></span>不要求跑步，也有参与位置</label>
-        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="可以带家人或孩子参加"><span class="check-dot"></span>可以带家人或孩子参加</label>
-        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="可以线上或异地参与"><span class="check-dot"></span>可以线上或异地参与</label>
-        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="周末只占半天"><span class="check-dot"></span>周末只占半天</label>
-        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="工作日安排短时活动"><span class="check-dot"></span>工作日安排短时活动</label>
-        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="每次任务和时间投入都很明确"><span class="check-dot"></span>每次任务和时间投入都很明确</label>
-        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="有熟悉的同事一起参加"><span class="check-dot"></span>有熟悉的同事一起参加</label>
-        <label class="option" onclick="toggleCheckMax(this,3);toggleOther(this)"><input type="checkbox" value="其他"><span class="check-dot"></span>其他</label>
+        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="活动低频，不需要持续打卡"><span class="check-dot"></span>📅 活动低频，不需要持续打卡</label>
+        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="不要求跑步，也有参与位置"><span class="check-dot"></span>🚶 不要求跑步，也有参与位置</label>
+        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="可以带家人或孩子参加"><span class="check-dot"></span>👨‍👩‍👧 可以带家人或孩子参加</label>
+        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="可以线上或异地参与"><span class="check-dot"></span>💻 可以线上或异地参与</label>
+        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="周末只占半天"><span class="check-dot"></span>⏰ 周末只占半天</label>
+        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="工作日安排短时活动"><span class="check-dot"></span>📋 工作日安排短时活动</label>
+        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="每次任务和时间投入都很明确"><span class="check-dot"></span>🎯 每次任务和时间投入都很明确</label>
+        <label class="option" onclick="toggleCheckMax(this,3)"><input type="checkbox" value="有熟悉的同事一起参加"><span class="check-dot"></span>🤝 有熟悉的同事一起参加</label>
+        <label class="option" onclick="toggleCheckMax(this,3);toggleOther(this)"><input type="checkbox" value="其他"><span class="check-dot"></span>💬 其他</label>
       </div>
       <input class="other-input" id="q4other" placeholder="请说明……">
     </div>
@@ -228,9 +291,9 @@ h1 {
     <div class="q-block">
       <div class="q-label"><span class="q-num">5</span> 如果有一次家庭友好的轻活动，你愿意了解吗？</div>
       <div class="options" data-q="q5">
-        <label class="option" onclick="selectRadio(this);showQ5a()"><input type="radio" name="q5" value="愿意参加"><span class="radio-dot"></span>愿意参加</label>
-        <label class="option" onclick="selectRadio(this);showQ5a()"><input type="radio" name="q5" value="看时间和活动内容"><span class="radio-dot"></span>看时间和活动内容</label>
-        <label class="option" onclick="selectRadio(this);hideQ5a()"><input type="radio" name="q5" value="暂时不考虑"><span class="radio-dot"></span>暂时不考虑</label>
+        <label class="option" onclick="selectRadio(this);showQ5a()"><input type="radio" name="q5" value="愿意参加"><span class="radio-dot"></span>✅ 愿意参加</label>
+        <label class="option" onclick="selectRadio(this);showQ5a()"><input type="radio" name="q5" value="看时间和活动内容"><span class="radio-dot"></span>🤔 看时间和活动内容</label>
+        <label class="option" onclick="selectRadio(this);hideQ5a()"><input type="radio" name="q5" value="暂时不考虑"><span class="radio-dot"></span>⏸️ 暂时不考虑</label>
       </div>
     </div>
 
@@ -239,10 +302,10 @@ h1 {
       <div class="q-block">
         <div class="q-label"><span class="q-num">5a</span> 孩子的年龄阶段是？</div>
         <div class="options" data-q="q5a">
-          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="5—7岁"><span class="radio-dot"></span>5—7岁</label>
-          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="8—10岁"><span class="radio-dot"></span>8—10岁</label>
-          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="11—13岁"><span class="radio-dot"></span>11—13岁</label>
-          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="14—15岁"><span class="radio-dot"></span>14—15岁</label>
+          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="5—7岁"><span class="radio-dot"></span>5—7 岁</label>
+          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="8—10岁"><span class="radio-dot"></span>8—10 岁</label>
+          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="11—13岁"><span class="radio-dot"></span>11—13 岁</label>
+          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="14—15岁"><span class="radio-dot"></span>14—15 岁</label>
           <label class="option" onclick="selectRadio(this)"><input type="radio" name="q5a" value="暂时只想自己参加"><span class="radio-dot"></span>暂时只想自己参加</label>
         </div>
       </div>
@@ -250,13 +313,13 @@ h1 {
 
     <!-- Q6 -->
     <div class="q-block">
-      <div class="q-label"><span class="q-num">6</span> 三张角色卡中，哪一张让你有一点点心动？</div>
+      <div class="q-label"><span class="q-num">6</span> 三张角色卡，哪一张让你有一点点心动？</div>
       <div class="options" data-q="q6">
-        <label class="option" onclick="selectRadio(this);showQ7()"><input type="radio" name="q6" value="训练官"><span class="radio-dot"></span><b>训练官</b>&nbsp; 把训练设计得愿意开始、能够坚持</label>
-        <label class="option" onclick="selectRadio(this);showQ7()"><input type="radio" name="q6" value="后勤官"><span class="radio-dot"></span><b>后勤官</b>&nbsp; 把装备、补给和安排变成让人安心的清单</label>
-        <label class="option" onclick="selectRadio(this);showQ7()"><input type="radio" name="q6" value="文宣官"><span class="radio-dot"></span><b>文宣官</b>&nbsp; 记录真实的人和瞬间，让故事被看见</label>
-        <label class="option" onclick="selectRadio(this);showQ7()"><input type="radio" name="q6" value="想先了解岗位内容"><span class="radio-dot"></span>想先了解岗位内容</label>
-        <label class="option" onclick="selectRadio(this);hideQ7()"><input type="radio" name="q6" value="暂时没有"><span class="radio-dot"></span>暂时没有</label>
+        <label class="option" onclick="selectRadio(this);showQ7()"><input type="radio" name="q6" value="训练官"><span class="radio-dot"></span>🏋️ <b>训练官</b> · 把训练设计得愿意开始、能够坚持</label>
+        <label class="option" onclick="selectRadio(this);showQ7()"><input type="radio" name="q6" value="后勤官"><span class="radio-dot"></span>🎒 <b>后勤官</b> · 把装备、补给和安排变成让人安心的清单</label>
+        <label class="option" onclick="selectRadio(this);showQ7()"><input type="radio" name="q6" value="文宣官"><span class="radio-dot"></span>📸 <b>文宣官</b> · 记录真实的人和瞬间，让故事被看见</label>
+        <label class="option" onclick="selectRadio(this);showQ7()"><input type="radio" name="q6" value="想先了解岗位内容"><span class="radio-dot"></span>📖 想先了解岗位内容</label>
+        <label class="option" onclick="selectRadio(this);hideQ7()"><input type="radio" name="q6" value="暂时没有"><span class="radio-dot"></span>😌 暂时没有</label>
       </div>
     </div>
 
@@ -265,10 +328,10 @@ h1 {
       <div class="q-block">
         <div class="q-label"><span class="q-num">7</span> 是否愿意会后聊十分钟？</div>
         <div class="options" data-q="q7">
-          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q7" value="可以，会后找我"><span class="radio-dot"></span>可以，会后找我</label>
-          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q7" value="可以，之后私聊"><span class="radio-dot"></span>可以，之后私聊</label>
-          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q7" value="先把岗位说明发给我"><span class="radio-dot"></span>先把岗位说明发给我</label>
-          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q7" value="目前只是好奇，不用联系"><span class="radio-dot"></span>目前只是好奇，不用联系</label>
+          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q7" value="可以，会后找我"><span class="radio-dot"></span>☕ 可以，会后找我</label>
+          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q7" value="可以，之后私聊"><span class="radio-dot"></span>💬 可以，之后私聊</label>
+          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q7" value="先把岗位说明发给我"><span class="radio-dot"></span>📩 先把岗位说明发给我</label>
+          <label class="option" onclick="selectRadio(this)"><input type="radio" name="q7" value="目前只是好奇，不用联系"><span class="radio-dot"></span>🤔 目前只是好奇，不用联系</label>
         </div>
       </div>
     </div>
@@ -280,13 +343,13 @@ h1 {
       <div class="name-note">仅用于后续联系，不会直接视为报名成功</div>
     </div>
 
-    <button class="submit-btn" onclick="submitSurvey()">放入时间胶囊</button>
+    <button class="submit-btn" onclick="submitSurvey()">📮 放入时间胶囊</button>
   </div>
 
   <div class="thanks" id="thanks">
-    <div class="icon">🌊</div>
+    <div class="big-icon">📦</div>
     <h2>已放入时间胶囊</h2>
-    <p>你的那句话，我们会替你保管到十二月。<br>今天不需要决定去不去海南，<br>给这件事留一个位置就够了。</p>
+    <p>你的那句话，我们会替你保管到十二月。<br>今天不需要决定去不去海南，<br>给这件事留一个位置就够了。<br><br>🌊 十二月见</p>
   </div>
 </div>
 
@@ -296,84 +359,56 @@ function selectRadio(el) {
   el.classList.add('selected');
   el.querySelector('input').checked = true;
 }
-
 function toggleCheck(el) {
   el.classList.toggle('selected');
-  el.querySelector('input').checked = !el.querySelector('input').checked;
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
 }
-
 function toggleCheckMax(el, max) {
   const parent = el.parentElement;
-  const all = parent.querySelectorAll('input[type="checkbox"]');
   const checked = parent.querySelectorAll('input:checked');
   const cb = el.querySelector('input');
-  
-  if (!cb.checked && checked.length >= max) {
-    alert('最多选 ' + max + ' 项');
-    return;
-  }
+  if (!cb.checked && checked.length >= max) { return; }
   el.classList.toggle('selected');
   cb.checked = !cb.checked;
 }
-
 function toggleOther(el) {
-  const otherInput = document.getElementById('q4other');
   const cb = el.querySelector('input');
-  if (cb.checked) {
-    otherInput.classList.add('show');
-  } else {
-    otherInput.classList.remove('show');
-  }
+  const oi = document.getElementById('q4other');
+  if (cb.checked) oi.classList.add('show'); else oi.classList.remove('show');
 }
-
 function showQ5a() { document.getElementById('q5a').classList.add('show'); }
 function hideQ5a() { document.getElementById('q5a').classList.remove('show'); }
 function showQ7() { document.getElementById('q7').classList.add('show'); }
 function hideQ7() { document.getElementById('q7').classList.remove('show'); }
-
 function countChar(el) {
   const c = document.getElementById('q1count');
   c.textContent = el.value.length + ' / 50';
   c.className = 'char-count' + (el.value.length > 50 ? ' over' : '');
 }
-
 function getRadio(name) {
   const el = document.querySelector('input[name="'+name+'"]:checked');
   return el ? el.value : '';
 }
-
 function getCheckboxes(q) {
   return Array.from(document.querySelectorAll('[data-q="'+q+'"] input:checked')).map(c => c.value);
 }
-
 function submitSurvey() {
   const data = {
     q1: document.getElementById('q1').value.trim(),
     q2: getRadio('q2'),
     q3: getCheckboxes('q3'),
     q4: getCheckboxes('q4'),
-    q5: getRadio('q5'),
-    q5a: '',
-    q6: getRadio('q6'),
-    q7: '',
+    q5: getRadio('q5'), q5a: '', q6: getRadio('q6'), q7: '',
     name: document.getElementById('name').value.trim(),
     q4other: document.getElementById('q4other').value.trim(),
     time: new Date().toISOString()
   };
-
-  // Conditional Q5a
-  if (data.q5 === '愿意参加' || data.q5 === '看时间和活动内容') {
-    data.q5a = getRadio('q5a');
-  }
-  // Conditional Q7
-  if (data.q6 && data.q6 !== '暂时没有') {
-    data.q7 = getRadio('q7');
-  }
-
+  if (data.q5 === '愿意参加' || data.q5 === '看时间和活动内容') data.q5a = getRadio('q5a');
+  if (data.q6 && data.q6 !== '暂时没有') data.q7 = getRadio('q7');
   const all = JSON.parse(localStorage.getItem('yueshan_capsule') || '[]');
   all.push(data);
   localStorage.setItem('yueshan_capsule', JSON.stringify(all));
-
   document.getElementById('form').style.display = 'none';
   document.getElementById('thanks').classList.add('show');
 }
