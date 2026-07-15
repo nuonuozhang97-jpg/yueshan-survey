@@ -9,66 +9,62 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
   background: linear-gradient(170deg, #e8f4f8, #c9e8f0, #a8d8ea);
-  min-height: 100vh; padding: 40px 20px;
-  display: flex; flex-direction: column; align-items: center;
+  min-height: 100vh; padding: 20px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 .card {
   background: rgba(255,255,255,.92); border-radius: 24px;
-  padding: 40px 30px; width: 100%; max-width: 520px;
+  padding: 36px 28px; width: 100%; max-width: 500px;
   box-shadow: 0 8px 40px rgba(16,80,120,.1);
 }
 h1 {
-  text-align: center; font-size: 24px; font-weight: 800;
+  text-align: center; font-size: 22px; font-weight: 800;
   background: linear-gradient(135deg, #0077b6, #48cae4);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 8px;
+  background-clip: text; margin-bottom: 4px;
 }
-.subtitle { text-align: center; color: #6b8a9a; font-size: 14px; margin-bottom: 28px; }
+.subtitle { text-align: center; color: #6b8a9a; font-size: 13px; margin-bottom: 24px; }
 .total {
-  text-align: center; font-size: 48px; font-weight: 900;
-  color: #0077b6; margin-bottom: 4px;
+  text-align: center; font-size: 44px; font-weight: 900;
+  color: #0077b6; margin-bottom: 2px;
 }
-.total-label { text-align: center; color: #8ab4c4; font-size: 13px; margin-bottom: 28px; }
-.bar-wrap { margin: 8px 0 16px; }
-.bar-label { font-size: 14px; color: #2a6178; display: flex; justify-content: space-between; margin-bottom: 4px; }
-.bar-label span:last-child { color: #5b96ab; font-size: 12px; }
-.bar-track { height: 28px; background: #edf6fa; border-radius: 8px; overflow: hidden; }
+.total-label { text-align: center; color: #8ab4c4; font-size: 12px; margin-bottom: 24px; }
+.bar-wrap { margin: 6px 0 12px; }
+.bar-label { font-size: 13px; color: #2a6178; display: flex; justify-content: space-between; margin-bottom: 3px; }
+.bar-label span:last-child { color: #5b96ab; font-size: 11px; }
+.bar-track { height: 26px; background: #edf6fa; border-radius: 7px; overflow: hidden; }
 .bar-fill {
-  height: 100%; border-radius: 8px;
+  height: 100%; border-radius: 7px;
   background: linear-gradient(90deg, #0077b6, #48cae4);
   transition: width .5s; display: flex; align-items: center;
-  padding-left: 10px; color: #fff; font-size: 12px; font-weight: 700; min-width: 40px;
+  padding-left: 10px; color: #fff; font-size: 11px; font-weight: 700; min-width: 36px;
 }
-.refresh {
-  margin-top: 24px; text-align: center;
+.synced-msg {
+  text-align: center; font-size: 12px; color: #30a14e;
+  margin-top: 16px; display: none;
 }
-.refresh button {
-  padding: 10px 28px; background: #0077b6; color: #fff;
-  border: none; border-radius: 10px; font-size: 14px; cursor: pointer;
-}
-.refresh button:hover { background: #0096c7; }
-.auto-refresh { text-align: center; color: #8ab4c4; font-size: 12px; margin-top: 10px; }
-.error { text-align: center; color: #e76f51; padding: 40px; }
+.synced-msg.show { display: block; }
+.footer { text-align: center; color: #a0c4d4; font-size: 11px; margin-top: 16px; }
 </style>
 </head>
 <body>
 <div class="card">
   <h1>越山向海 · 投票结果</h1>
-  <p class="subtitle">听到「今年继续」，你的第一反应是什么？</p>
+  <p class="subtitle">听到「今年继续」，你的第一反应？</p>
   <div class="total" id="totalCount">-</div>
   <div class="total-label">人已投票</div>
   <div id="bars"></div>
-  <div class="refresh"><button onclick="load()">🔄 刷新</button></div>
-  <div class="auto-refresh">每 10 秒自动刷新</div>
+  <div class="synced-msg" id="syncedMsg">✅ 你的投票已计入</div>
+  <div class="footer">自动更新中 · 扫码即可查看</div>
 </div>
 
 <script>
-const API = window.location.origin + '/api/results';
+const KEY = 'yueshan_vote_2026';
 const LABELS = ['🔥 很燃，但感觉和我没什么关系','💪 想支持，但确实没有时间','🤷 我不跑步，不知道能做什么','👀 有点好奇，但还没准备好','🌟 我愿意进一步了解'];
 
 async function load() {
   try {
-    const r = await fetch(API);
+    const r = await fetch(window.location.origin + '/api/results');
     const data = await r.json();
     const counts = data.counts || [0,0,0,0,0];
     const total = counts.reduce((a,b)=>a+b,0);
@@ -77,15 +73,32 @@ async function load() {
       const pct = total > 0 ? Math.round(c/total*100) : 0;
       return `<div class="bar-wrap">
         <div class="bar-label"><span>${LABELS[i]}</span><span>${c} 票 (${pct}%)</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.max(pct,c>0?4:0)}%">${pct>10?pct+'%':''}</div></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.max(pct,c>0?3:0)}%">${pct>10?pct+'%':''}</div></div>
       </div>`;
     }).join('');
   } catch(e) {
-    document.getElementById('bars').innerHTML = '<div class="error">加载失败，点刷新重试</div>';
+    document.getElementById('bars').innerHTML = '<div style="text-align:center;color:#e76f51;padding:20px;">加载失败，下拉刷新</div>';
   }
 }
+
+// 自动同步旧票
+const voted = localStorage.getItem(KEY);
+const alreadySynced = localStorage.getItem('yueshan_result_synced');
+if (voted !== null && !alreadySynced) {
+  const idx = parseInt(voted, 10);
+  fetch(window.location.origin + '/api/vote', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({idx: idx})
+  }).then(() => {
+    localStorage.setItem('yueshan_result_synced', '1');
+    document.getElementById('syncedMsg').classList.add('show');
+    load();
+  }).catch(() => {});
+}
+
 load();
-setInterval(load, 10000);
+setInterval(load, 5000);
 </script>
 </body>
 </html>
