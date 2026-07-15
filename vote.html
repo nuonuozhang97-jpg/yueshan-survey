@@ -302,7 +302,7 @@ function selectOpt(el) {
   el.classList.add('selected');
 }
 
-const API = 'https://jsonblob.com/api/jsonBlob/019f64d8-019d-7ff1-92fe-2a97b178f807';
+const API = window.location.origin + '/api/vote';
 
 function submitVote() {
   const sel = document.querySelector('input[name="vote"]:checked');
@@ -322,10 +322,11 @@ function submitVote() {
   counts[idx]++;
   localStorage.setItem('yueshan_counts', JSON.stringify(counts));
 
-  // 同步到云端（你就能看到汇总结果）
-  fetch(API).then(r=>r.json()).then(data=>{
-    data.counts[idx] = (data.counts[idx]||0) + 1;
-    return fetch(API, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+  // 同步到服务器
+  fetch(API, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({idx: idx})
   }).catch(()=>{});
 
   document.getElementById('voteBtn').disabled = true;
@@ -349,28 +350,10 @@ function renderResults(counts) {
 
 (function() {
   const voted = localStorage.getItem(KEY);
-  const localCounts = JSON.parse(localStorage.getItem('yueshan_counts') || '[0,0,0,0,0]');
-  renderResults(localCounts);
   if (voted !== null) {
     document.getElementById('voteBtn').disabled = true;
     document.getElementById('btnText').textContent = '✅ 已投票';
     document.getElementById('thanksMsg').classList.add('show');
-    
-    // 补救：把之前投的票同步到云端
-    const alreadySynced = localStorage.getItem('yueshan_synced');
-    if (!alreadySynced) {
-      const idx = parseInt(voted, 10);
-      fetch(API).then(r=>r.json()).then(data=>{
-        // 避免重复计数：检查是否已存在
-        if (data._syncedFrom && data._syncedFrom[idx]) return;
-        data.counts[idx] = (data.counts[idx]||0) + 1;
-        if (!data._syncedFrom) data._syncedFrom = {};
-        data._syncedFrom[idx] = true;
-        return fetch(API, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
-      }).then(()=>{
-        localStorage.setItem('yueshan_synced', '1');
-      }).catch(()=>{});
-    }
   }
 })();
 </script>
