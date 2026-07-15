@@ -349,12 +349,28 @@ function renderResults(counts) {
 
 (function() {
   const voted = localStorage.getItem(KEY);
-  const counts = JSON.parse(localStorage.getItem('yueshan_counts') || '[0,0,0,0,0]');
-  renderResults(counts);
+  const localCounts = JSON.parse(localStorage.getItem('yueshan_counts') || '[0,0,0,0,0]');
+  renderResults(localCounts);
   if (voted !== null) {
     document.getElementById('voteBtn').disabled = true;
     document.getElementById('btnText').textContent = '✅ 已投票';
     document.getElementById('thanksMsg').classList.add('show');
+    
+    // 补救：把之前投的票同步到云端
+    const alreadySynced = localStorage.getItem('yueshan_synced');
+    if (!alreadySynced) {
+      const idx = parseInt(voted, 10);
+      fetch(API).then(r=>r.json()).then(data=>{
+        // 避免重复计数：检查是否已存在
+        if (data._syncedFrom && data._syncedFrom[idx]) return;
+        data.counts[idx] = (data.counts[idx]||0) + 1;
+        if (!data._syncedFrom) data._syncedFrom = {};
+        data._syncedFrom[idx] = true;
+        return fetch(API, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+      }).then(()=>{
+        localStorage.setItem('yueshan_synced', '1');
+      }).catch(()=>{});
+    }
   }
 })();
 </script>
