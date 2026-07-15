@@ -302,6 +302,8 @@ function selectOpt(el) {
   el.classList.add('selected');
 }
 
+const API = 'https://jsonblob.com/api/jsonBlob/019f64d8-019d-7ff1-92fe-2a97b178f807';
+
 function submitVote() {
   const sel = document.querySelector('input[name="vote"]:checked');
   if (!sel) { 
@@ -315,17 +317,16 @@ function submitVote() {
   const idx = parseInt(sel.value);
   localStorage.setItem(KEY, idx);
   
-  // 本地存储
+  // 本地即时更新
   let counts = JSON.parse(localStorage.getItem('yueshan_counts') || '[0,0,0,0,0]');
   counts[idx]++;
   localStorage.setItem('yueshan_counts', JSON.stringify(counts));
 
-  // 尝试提交到实时服务器（投屏用）
-  fetch('/api/vote', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({idx: idx})
-  }).catch(() => {});  // 失败静默，不影响本地使用
+  // 同步到云端（你就能看到汇总结果）
+  fetch(API).then(r=>r.json()).then(data=>{
+    data.counts[idx] = (data.counts[idx]||0) + 1;
+    return fetch(API, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+  }).catch(()=>{});
 
   document.getElementById('voteBtn').disabled = true;
   document.getElementById('btnText').textContent = '✅ 已投票';
